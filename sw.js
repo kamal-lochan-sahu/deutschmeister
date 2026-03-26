@@ -1,5 +1,5 @@
 // DeutschMeister Service Worker
-const CACHE = "deutschmeister-v2";
+const CACHE = "deutschmeister-v3";
 const ASSETS = [
   "./index.html",
   "./style.css",
