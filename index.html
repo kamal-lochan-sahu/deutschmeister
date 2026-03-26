@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#1a1a2e"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="DeutschMeister"/>
+  <link rel="manifest" href="manifest.json"/>
+  <title>DeutschMeister – German AI Teacher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash" class="splash">
+  <div class="splash-inner">
+    <div class="splash-icon">🇩🇪</div>
+    <h1 class="splash-title">DeutschMeister</h1>
+    <p class="splash-sub">Aapka Personal German AI Teacher</p>
+    <div class="splash-loader"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen" class="screen hidden">
+  <div class="setup-container">
+    <div class="setup-hero">
+      <div class="setup-flag">🇩🇪</div>
+      <h1>DeutschMeister</h1>
+      <p>A1 se C2 tak — Hinglish mein German seekho!</p>
+    </div>
+
+    <div class="setup-card">
+      <h2>🔑 Groq API Key Daalo</h2>
+      <p class="setup-hint">groq.com pe FREE account banao → API Keys → Key copy karo</p>
+      <div class="input-group">
+        <input type="password" id="api-key-input" placeholder="gsk_xxxxxxxxxxxxxxxx" autocomplete="off"/>
+        <button id="toggle-key" class="icon-btn">👁️</button>
+      </div>
+      <a href="https://console.groq.com/keys" target="_blank" class="link-btn">→ Groq Free API Key Lelo (30 sec)</a>
+    </div>
+
+    <div class="setup-card">
+      <h2>📊 Apna Level Choose Karo</h2>
+      <div class="level-grid" id="level-selector">
+        <button class="level-btn active" data-level="A1">
+          <span class="level-code">A1</span>
+          <span class="level-name">Beginner</span>
+          <span class="level-desc">Bilkul nayi shuruwat</span>
+        </button>
+        <button class="level-btn" data-level="A2">
+          <span class="level-code">A2</span>
+          <span class="level-name">Elementary</span>
+          <span class="level-desc">Thoda jaanta hoon</span>
+        </button>
+        <button class="level-btn" data-level="B1">
+          <span class="level-code">B1</span>
+          <span class="level-name">Intermediate</span>
+          <span class="level-desc">Basic conversations</span>
+        </button>
+        <button class="level-btn" data-level="B2">
+          <span class="level-code">B2</span>
+          <span class="level-name">Upper-Inter</span>
+          <span class="level-desc">Confident speaker</span>
+        </button>
+        <button class="level-btn" data-level="C1">
+          <span class="level-code">C1</span>
+          <span class="level-name">Advanced</span>
+          <span class="level-desc">Almost fluent</span>
+        </button>
+        <button class="level-btn" data-level="C2">
+          <span class="level-code">C2</span>
+          <span class="level-name">Mastery</span>
+          <span class="level-desc">Native-like</span>
+        </button>
+      </div>
+    </div>
+
+    <button id="start-btn" class="start-btn">
+      🚀 Seekhna Shuru Karo!
+    </button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="screen hidden">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <button class="nav-icon-btn" id="menu-btn">☰</button>
+    <div class="nav-center">
+      <span class="nav-flag">🇩🇪</span>
+      <span class="nav-title">DeutschMeister</span>
+    </div>
+    <div class="nav-stats">
+      <span class="xp-badge">⚡ <span id="xp-count">0</span> XP</span>
+      <span class="streak-badge">🔥 <span id="streak-count">0</span></span>
+    </div>
+  </nav>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab active" data-tab="learn">📚 Learn</button>
+    <button class="tab" data-tab="chat">💬 Chat</button>
+    <button class="tab" data-tab="quiz">🧠 Quiz</button>
+    <button class="tab" data-tab="vocab">📖 Vocab</button>
+    <button class="tab" data-tab="progress">📊 Progress</button>
+  </div>
+
+  <!-- LEARN TAB -->
+  <div id="tab-learn" class="tab-content active">
+    <div class="learn-header">
+      <div class="current-level-badge">
+        <span id="current-level-display">A1</span>
+        <span>Current Level</span>
+      </div>
+      <div class="level-xp-bar">
+        <div class="xp-bar-fill" id="xp-bar" style="width:0%"></div>
+      </div>
+      <p class="xp-label"><span id="xp-current">0</span> / <span id="xp-needed">100</span> XP for next level</p>
+    </div>
+
+    <h2 class="section-title">🎯 Today's Topics</h2>
+    <div id="topics-grid" class="topics-grid"></div>
+
+    <h2 class="section-title">📚 All Lessons</h2>
+    <div id="lessons-list" class="lessons-list"></div>
+  </div>
+
+  <!-- CHAT TAB -->
+  <div id="tab-chat" class="tab-content hidden">
+    <div class="chat-header">
+      <div class="teacher-avatar">👨‍🏫</div>
+      <div class="teacher-info">
+        <strong>Meister Klaus</strong>
+        <span class="online-dot">● Online</span>
+      </div>
+      <button id="clear-chat" class="icon-btn small">🗑️</button>
+    </div>
+
+    <div id="chat-messages" class="chat-messages">
+      <div class="chat-welcome">
+        <div class="welcome-avatar">👨‍🏫</div>
+        <div class="welcome-text">
+          <strong>Meister Klaus</strong>
+          <p>Hallo! Main hoon Meister Klaus — aapka personal German teacher! 🎉<br><br>
+          Aaj hum German seekhenge — main aapko Hinglish mein samjhaunga, aur aapki galtiyan pyaar se sudharunga! 😊<br><br>
+          Apna pehla sawaal poochho ya kaho <strong>"Start karo"</strong>!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <button id="voice-input-btn" class="voice-btn" title="Voice input">🎤</button>
+      <input type="text" id="chat-input" placeholder="German mein likhо ya poochho..." autocomplete="off"/>
+      <button id="send-btn" class="send-btn">➤</button>
+    </div>
+    <div id="voice-status" class="voice-status hidden">🎤 Bol raha hoon... (dobara dabao band karne ke liye)</div>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="tab-quiz" class="tab-content hidden">
+    <div class="quiz-container" id="quiz-container">
+      <div class="quiz-home">
+        <div class="quiz-hero">🧠</div>
+        <h2>Knowledge Check!</h2>
+        <p>Apni knowledge test karo — questions aapke level ke hisaab se honge</p>
+        <button id="start-quiz-btn" class="start-btn">Quiz Shuru Karo!</button>
+        <div class="quiz-stats">
+          <div class="qstat"><span id="quiz-score">0</span><small>Best Score</small></div>
+          <div class="qstat"><span id="quiz-taken">0</span><small>Quizzes Done</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOCAB TAB -->
+  <div id="tab-vocab" class="tab-content hidden">
+    <div class="vocab-search">
+      <input type="text" id="vocab-search" placeholder="🔍 Search vocabulary..."/>
+    </div>
+    <div class="vocab-actions">
+      <button id="add-vocab-btn" class="pill-btn">➕ Add Word</button>
+      <button id="flashcard-btn" class="pill-btn">🃏 Flashcards</button>
+    </div>
+    <div id="vocab-list" class="vocab-list"></div>
+    <div id="flashcard-view" class="flashcard-view hidden">
+      <div class="flashcard" id="flashcard">
+        <div class="flashcard-front" id="fc-front">Click to flip</div>
+        <div class="flashcard-back hidden" id="fc-back">Answer</div>
+      </div>
+      <div class="fc-controls">
+        <button id="fc-prev" class="pill-btn">← Prev</button>
+        <span id="fc-counter">1/1</span>
+        <button id="fc-next" class="pill-btn">Next →</button>
+      </div>
+      <button id="close-flashcard" class="pill-btn red">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS TAB -->
+  <div id="tab-progress" class="tab-content hidden">
+    <div class="progress-header">
+      <div class="progress-avatar">🏆</div>
+      <h2 id="progress-name">Mera Progress</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card gold"><div class="stat-num" id="stat-xp">0</div><div class="stat-label">Total XP</div></div>
+      <div class="stat-card orange"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Day Streak 🔥</div></div>
+      <div class="stat-card green"><div class="stat-num" id="stat-lessons">0</div><div class="stat-label">Lessons Done</div></div>
+      <div class="stat-card blue"><div class="stat-num" id="stat-vocab">0</div><div class="stat-label">Words Learned</div></div>
+    </div>
+    <h3 class="section-title">📈 Level Journey</h3>
+    <div class="level-journey" id="level-journey"></div>
+    <h3 class="section-title">⚙️ Settings</h3>
+    <div class="settings-card">
+      <div class="setting-row">
+        <span>🔑 Change API Key</span>
+        <button id="change-key-btn" class="pill-btn small">Change</button>
+      </div>
+      <div class="setting-row">
+        <span>🔊 Teacher Voice</span>
+        <label class="toggle"><input type="checkbox" id="voice-toggle" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <span>🌙 Aapka Level</span>
+        <select id="level-change" class="level-select">
+          <option value="A1">A1 Beginner</option>
+          <option value="A2">A2 Elementary</option>
+          <option value="B1">B1 Intermediate</option>
+          <option value="B2">B2 Upper-Inter</option>
+          <option value="C1">C1 Advanced</option>
+          <option value="C2">C2 Mastery</option>
+        </select>
+      </div>
+      <div class="setting-row danger">
+        <span>⚠️ Reset All Progress</span>
+        <button id="reset-btn" class="pill-btn small red">Reset</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LESSON MODAL -->
+<div id="lesson-modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Lesson</h2>
+      <button id="modal-close" class="icon-btn">✕</button>
+    </div>
+    <div id="modal-body" class="modal-body"></div>
+    <div class="modal-actions">
+      <button id="lesson-chat-btn" class="start-btn">💬 Meister se Practice Karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD VOCAB MODAL -->
+<div id="vocab-modal" class="modal hidden">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <h2>New Word Add Karo</h2>
+      <button class="icon-btn modal-close-btn">✕</button>
+    </div>
+    <div class="form-group">
+      <label>German Word</label>
+      <input type="text" id="vocab-german" placeholder="z.B. das Haus"/>
+    </div>
+    <div class="form-group">
+      <label>Meaning (Hindi/English)</label>
+      <input type="text" id="vocab-meaning" placeholder="z.B. घर / House"/>
+    </div>
+    <div class="form-group">
+      <label>Example Sentence (optional)</label>
+      <input type="text" id="vocab-example" placeholder="Das Haus ist groß."/>
+    </div>
+    <button id="save-vocab-btn" class="start-btn">💾 Save Karo</button>
+  </div>
+</div>
+
+<script src="lessons.js"></script>
+<script src="ai.js"></script>
+<script src="voice.js"></script>
+<script src="app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+</script>
+</body>
+</html>
