@@ -2,7 +2,7 @@
   "name": "DeutschMeister – German AI Teacher",
   "short_name": "DeutschMeister",
   "description": "A1 se C2 tak German seekho — Hinglish mein, bilkul free!",
-  "start_url": "/index.html",
+  "start_url": "/deutschmeister/index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
